@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameStateManager : MonoBehaviour
 {
-    public GameManager gameManager;
+
     public enum GameState
     {
         MainMenu_State,   // The game is at the main menu
@@ -52,18 +52,17 @@ public class GameStateManager : MonoBehaviour
         switch (state)
         {
             case GameState.MainMenu_State:
-                gameManager.uiManager.DisableAllMenuUI();
+                GameManager.Instance.UIManager.DisableAllMenuUI();
                 Debug.Log("Exited MainMenu State");
                 break;
 
             case GameState.Gameplay_State:
-                
-                gameManager.uiManager.DisableAllMenuUI();
+                GameManager.Instance.UIManager.DisableAllMenuUI();
                 Debug.Log("Exited Gameplay State");
                 break;
 
             case GameState.Paused_State:
-                gameManager.uiManager.DisableAllMenuUI();
+                GameManager.Instance.UIManager.DisableAllMenuUI();
                 Debug.Log("Exited Paused State");
                 break;
         }
@@ -75,21 +74,21 @@ public class GameStateManager : MonoBehaviour
         {
             case GameState.MainMenu_State:
                 EnableCursor();
-                gameManager.uiManager.EnableMainMenuUI();
+                GameManager.Instance.UIManager.EnableMainMenuUI();
                 Time.timeScale = 0;  // Stop gameplay when entering Main Menu
                 Debug.Log("Entered MainMenu State");
                 break;
 
             case GameState.Gameplay_State:
                 DisableCursor();
-                gameManager.uiManager.EnableGameplayMenuUI();
+                GameManager.Instance.UIManager.EnableGameplayMenuUI();
                 Time.timeScale = 1;  // Resume gameplay
                 Debug.Log("Entered Gameplay State");
                 break;
 
             case GameState.Paused_State:
                 EnableCursor();
-                gameManager.uiManager.EnablePauseMenuUI();
+                GameManager.Instance.UIManager.EnablePauseMenuUI();
                 Time.timeScale = 0;  // Pause gameplay
                 Debug.Log("Entered Paused State");
                 break;
@@ -98,7 +97,16 @@ public class GameStateManager : MonoBehaviour
 
     public void Play()
     {
+       GameManager.Instance.levelManager.LoadLevel("Gameplay");
+       ChangeState(GameState.Gameplay_State);
+    }
+    public void Resume()
+    {
         ChangeState(GameState.Gameplay_State);
+    }
+    public void Quit()
+    {
+        Application.Quit();
     }
 
     public void Pause()
@@ -108,6 +116,7 @@ public class GameStateManager : MonoBehaviour
 
     public void ChangeToMenuState()
     {
+        GameManager.Instance.levelManager.LoadLevel("MainMenu");
         ChangeState(GameState.MainMenu_State);
     }
     private void EnableCursor()
@@ -117,9 +126,5 @@ public class GameStateManager : MonoBehaviour
     private void DisableCursor()
     {
         Cursor.visible = false;
-    }
-    public void OnButtonClicked(GameState state)
-    {
-        ChangeState(state);
     }
 }
